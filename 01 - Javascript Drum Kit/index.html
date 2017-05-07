@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Possible additions: Change the background; play background music/click track; record audio; change the button set to look more like drums or an 808 drumkit -->
   <meta charset="UTF-8">
   <title>JS Drum Kit</title>
   <link rel="stylesheet" href="style.css">
@@ -59,13 +60,31 @@
 
 <script>
 function playAudioOnKeydown(e) {
+  /* Play the matching data-key audio file */
   const audio = document.querySelector('audio[data-key="'+e.keyCode+'"]');
+  const divSel = document.querySelector('div.key[data-key="'+e.keyCode+'"]');
   if (!audio) return; //if a non-bound key was selected then get out 
+  divSel.classList.add('playing');
   audio.currentTime = 0;
   audio.play();
 }
 
+function transitionElemEnd(e) {
+  /* wait until the end of the CSS transition event to remove the "playing" class */
+  if (e.propertyName != 'transform') return;
+  const divTar = e.target;
+  divTar.classList.remove('playing');
+}
+
+/* Adding an event listener for the end of the CSS transition, to all the div.key elements */
+const allKeyDivs = document.querySelectorAll('div.key');
+allKeyDivs.forEach(function (keyDiv) {
+  keyDiv.addEventListener("transitionend", transitionElemEnd);
+});
+
+/* Adding an event listener to the window for any key press */
 window.addEventListener("keydown", playAudioOnKeydown);
+
 </script>
 
 
